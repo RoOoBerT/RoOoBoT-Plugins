@@ -14,9 +14,11 @@ import com.google.code.chatterbotapi.ChatterBotType;
 
 import fr.rooobert.energy.rooobot.Plugin;
 import fr.rooobert.energy.rooobot.event.IrcMessageEvent;
+import fr.rooobert.energy.rooobot.event.IrcPrivateMessageEvent;
 import fr.rooobert.energy.rooobot.listeners.IrcMessageListener;
+import fr.rooobert.energy.rooobot.listeners.IrcPrivateMessageListener;
 
-public class CleverPlugin extends Plugin implements IrcMessageListener {
+public class CleverPlugin extends Plugin implements IrcMessageListener, IrcPrivateMessageListener {
 	// --- Constants
 	private final static Logger logger = Logger.getLogger(CleverPlugin.class);
 	
@@ -58,6 +60,7 @@ public class CleverPlugin extends Plugin implements IrcMessageListener {
 		this.botSession = this.bot.createSession();
 		
 		super.addMessageListener(null, null, this);
+		super.addPrivateMessageListener(null, this);
 	}
 	
 	@Override
@@ -65,6 +68,7 @@ public class CleverPlugin extends Plugin implements IrcMessageListener {
 		super.onDisable();
 		
 		super.removeMessageListener(this);
+		super.removePrivateMessageListener(this);
 		
 		this.sessions.clear();
 		this.botSession = null;
@@ -99,14 +103,17 @@ public class CleverPlugin extends Plugin implements IrcMessageListener {
 	}
 	
 	@Override
-	public void onPrivateMessage(final String channel, String sender, String login, final String message) {
+	public void onPrivateMessage(IrcPrivateMessageEvent event) {
 		// Check if the bot should respond to private messages
 		if (this.answerpm) {
+			final String username = event.getUser();
+			final String message = event.getMessage();
+			
 			// Get an existing session or create it
-			ChatterBotSession session = this.sessions.get(channel);
+			ChatterBotSession session = this.sessions.get(username);
 			if (session == null) {
 				session = this.bot.createSession();
-				this.sessions.put(channel, session);
+				this.sessions.put(username, session);
 			}
 			
 			// Launch parallel processing
@@ -119,13 +126,16 @@ public class CleverPlugin extends Plugin implements IrcMessageListener {
 						response = getResponse(session2, message);
 					}
 					synchronized (CleverPlugin.this) {
-						CleverPlugin.super.ircSendMessage(channel, response);
+						CleverPlugin.super.ircSendMessage(username, response);
 					}
 				}
 			};
 			
 			Thread thread = new Thread(runnable);
 			thread.start();
+			
+			// Mark the event as consumed so no other plugin(s) receive it
+			event.consume();
 		}
 	}
 	
