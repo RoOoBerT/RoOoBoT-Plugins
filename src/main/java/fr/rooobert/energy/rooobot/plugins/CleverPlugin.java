@@ -116,6 +116,8 @@ public class CleverPlugin extends Plugin implements IrcMessageListener, IrcPriva
 				this.sessions.put(username, session);
 			}
 			
+			// TODO Those sessions opened should be (periodically ?) closed/cleaned up (minor memory leak)
+			
 			// Launch parallel processing
 			final ChatterBotSession session2 = session;
 			Runnable runnable = new Runnable() {
