@@ -164,6 +164,7 @@ public class CleverPlugin extends Plugin implements IrcMessageListener, IrcPriva
 		} catch (Exception e) {
 			logger.info("Exception while CleverBot thinking : " + e.getMessage(), e);
 			response = "Je suis terriblement navré. J'ai planté en réfléchissant : " + e.getMessage();
+			this.disable();
 		}
 		logger.trace("CleverBot response : " + response);
 		
