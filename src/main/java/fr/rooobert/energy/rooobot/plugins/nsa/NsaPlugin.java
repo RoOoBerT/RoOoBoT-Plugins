@@ -95,12 +95,12 @@ public class NsaPlugin extends Plugin implements IrcMessageListener {
 	}
 
 	private void doPrintHelp(String channel) {
-		// FIXME Auto-generated method stub
+		// XXX Auto-generated method stub
 		
 	}
 
 	private void doPrintInfo(String channel, String subject) {
-		// FIXME Auto-generated method stub
+		// XXX Auto-generated method stub
 		
 	}
 }
