@@ -126,6 +126,7 @@ public class GooglePlugin extends Plugin implements IrcMessageListener {
 		// Check allowed search
 		String blacklist = this.isBlacklisted(query);
 		if (blacklist != null) {
+			logger.warn("Prohibited search request for user " + sender + " : " + query);
 			GooglePlugin.this.ircSendMessage(target, "Tu peux te mettre cette recherche là où je pense " + sender + "...");
 			return;
 		}
@@ -142,6 +143,7 @@ public class GooglePlugin extends Plugin implements IrcMessageListener {
 							if (!results.isEmpty()) {
 								SearchResult result = results.get(0);
 								
+								// XXX Check encoding ?
 								GooglePlugin.this.ircSendMessage(target, "Google : " + result.title + " => " + result.url.toExternalForm());
 							}
 						}
@@ -171,10 +173,7 @@ public class GooglePlugin extends Plugin implements IrcMessageListener {
 	private static boolean googleSearch(Collection<SearchResult> results, String query, int start) {
 		boolean success = true;
 		
-		// FIXME Ensure variable query is correctly sanitized
-		
 		// Create URI
-		//URI uri = HttpUtilities.parseURI("https://www.google.fr/search?&start=" + start + "&q=" + query);
 		URI uri = null;
 		try {
 			uri = HttpUtilities.parseURI("https://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=1&hl=fr&q=" + URLEncoder.encode(query, "UTF-8"));
