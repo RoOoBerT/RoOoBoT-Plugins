@@ -11,6 +11,7 @@ import org.pircbotx.User;
 import com.google.common.collect.ImmutableSortedSet;
 
 import fr.rooobert.energy.rooobot.Plugin;
+import fr.rooobert.energy.rooobot.Utilities;
 import fr.rooobert.energy.rooobot.event.IrcMessageEvent;
 import fr.rooobert.energy.rooobot.listeners.IrcMessageListener;
 
@@ -36,11 +37,11 @@ public class PanPlugin extends Plugin implements IrcMessageListener {
 		super(name, props);
 		
 		this.text = props.getProperty("pan.text", "PAN").toUpperCase();
-		this.countdown = (int) getInt(props.getProperty("pan.countdown"), 3);
-		this.maxdelay = getInt(props.getProperty("pan.maxdelay"), 1500);
-		this.mindelay = getInt(props.getProperty("pan.mindelay"), 3000);
-		this.acceptTimeout = getInt(props.getProperty("pan.acceptTimeout"), 60000);
-		this.shootTimeout = getInt(props.getProperty("pan.shootTimeout"), 10000);
+		this.countdown = Utilities.getInt(props.getProperty("pan.countdown"), 3);
+		this.maxdelay = Utilities.getInt(props.getProperty("pan.maxdelay"), 1500);
+		this.mindelay = Utilities.getInt(props.getProperty("pan.mindelay"), 3000);
+		this.acceptTimeout = Utilities.getInt(props.getProperty("pan.acceptTimeout"), 60000);
+		this.shootTimeout = Utilities.getInt(props.getProperty("pan.shootTimeout"), 10000);
 	}
 	
 	@Override
@@ -118,15 +119,6 @@ public class PanPlugin extends Plugin implements IrcMessageListener {
 		}
 	}
 	
-	/***/
-	public static int getInt(String str, int defaultValue) {
-		int l = defaultValue;
-		if (str != null) {
-			l = Integer.parseInt(str);
-		}
-		return l;
-	}
-	
 	//
 	protected class PanThread extends Thread {
 		// --- Constants
@@ -196,6 +188,8 @@ public class PanPlugin extends Plugin implements IrcMessageListener {
 			}
 		}
 		
+		@Override
+		@SuppressWarnings("synthetic-access")
 		public void run() {
 			// Register 2 message listeners
 			for (String nick : this.nicks) {

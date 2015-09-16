@@ -45,7 +45,7 @@ public class GooglePlugin extends Plugin implements IrcMessageListener {
 	// --- Constants
 	private static final Logger logger = LogManager.getLogger(GooglePlugin.class);
 	
-	// TODO BLACKLIST de HOST
+	// FIXME BLACKLIST de HOST
 	
 	// --- Attributes
 	private final long throttleTime;
